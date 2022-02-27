@@ -58,8 +58,6 @@ class myDevice:
 
 gauge1 = myDevice(20,5,"dev1")
 
-print(gauge1.name)
-
 while 1:
-    print(gauge1.take_reading())
+    print(gauge1.name, gauge1.take_reading())
     Event().wait(1)
