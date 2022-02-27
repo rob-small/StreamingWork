@@ -8,7 +8,8 @@ x - Setup as an object
 x - Have mean and standard deviation changeable
 x - Have it run every second and pump out a reading to stdout
 Add name attribute
-Add timestamp and name to output
+Add name to output
+Add timestamp to output
 """
 
 from numpy.random import default_rng
@@ -16,11 +17,21 @@ from threading import Event
 
 class myDevice:
     
-    def __init__(self, mean, stdev):
+    def __init__(self, mean, stdev, name = ""):
         self.mean = mean
-        self.stdev = stdev  
+        self.stdev = stdev
+        self.name = name
         self._rng = default_rng()
   
+    @property
+    def name(self):
+#        print ("mean getter")
+        return self._name
+
+    @name.setter
+    def name(self,value):
+        self._name = value
+    
     @property
     def mean(self):
 #        print ("mean getter")
@@ -45,7 +56,9 @@ class myDevice:
         return self._rng.normal(self.mean,self.stdev)
         
 
-gauge1 = myDevice(20,5)
+gauge1 = myDevice(20,5,"dev1")
+
+print(gauge1.name)
 
 while 1:
     print(gauge1.take_reading())
