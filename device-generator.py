@@ -14,6 +14,7 @@ Add timestamp to output
 
 from numpy.random import default_rng
 from threading import Event
+from datetime import datetime
 
 class myDevice:
     
@@ -59,5 +60,5 @@ class myDevice:
 gauge1 = myDevice(20,5,"dev1")
 
 while 1:
-    print(gauge1.name, gauge1.take_reading())
+    print(gauge1.name, datetime.now(), gauge1.take_reading())
     Event().wait(1)
