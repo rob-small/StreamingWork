@@ -7,9 +7,11 @@ Created on Fri Feb 25 15:41:10 2022
 x - Setup as an object
 x - Have mean and standard deviation changeable
 x - Have it run every second and pump out a reading to stdout
-Add name attribute
-Add name to output
-Add timestamp to output
+x - Add name attribute
+x - Add name to output
+x - Add timestamp to output
+x- Flush output regularly
+x - Put a delimiter in the output
 """
 
 from numpy.random import default_rng
@@ -60,5 +62,5 @@ class myDevice:
 gauge1 = myDevice(20,5,"dev1")
 
 while 1:
-    print(gauge1.name, datetime.now(), gauge1.take_reading())
+    print(gauge1.name, datetime.now(), gauge1.take_reading(), sep=",", flush=True)
     Event().wait(1)
