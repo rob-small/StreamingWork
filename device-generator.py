@@ -10,13 +10,15 @@ x - Have it run every second and pump out a reading to stdout
 x - Add name attribute
 x - Add name to output
 x - Add timestamp to output
-x- Flush output regularly
+x - Flush output regularly
 x - Put a delimiter in the output
+x - convert output to json
 """
 
 from numpy.random import default_rng
 from threading import Event
 from datetime import datetime
+import json
 
 class myDevice:
     
@@ -61,6 +63,11 @@ class myDevice:
 
 gauge1 = myDevice(20,5,"dev1")
 
+gauge1_out = {}
+gauge1_out['name'] = gauge1.name
+
 while 1:
-    print(gauge1.name, datetime.now(), gauge1.take_reading(), sep=",", flush=True)
+    gauge1_out['timestamp'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S:%f")
+    gauge1_out['reading'] = gauge1.take_reading()
+    print(json.dumps(gauge1_out), flush=True)
     Event().wait(1)
