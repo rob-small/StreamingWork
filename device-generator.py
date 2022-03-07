@@ -13,6 +13,7 @@ x - Add timestamp to output
 x - Flush output regularly
 x - Put a delimiter in the output
 x - convert output to json
+x - initialize a list of devices
 """
 
 from numpy.random import default_rng
@@ -30,7 +31,6 @@ class myDevice:
   
     @property
     def name(self):
-#        print ("mean getter")
         return self._name
 
     @name.setter
@@ -39,35 +39,38 @@ class myDevice:
     
     @property
     def mean(self):
-#        print ("mean getter")
         return self._mean
     
     @mean.setter
     def mean(self,value):
-#        print ("mean setter")
         self._mean = value
 
     @property
     def stdev(self):
-#        print ("stdev getter")
         return self._stdev
     
     @stdev.setter
     def stdev(self,value):
-#        print ("stdev setter")
         self._stdev = value
 
     def take_reading(self):
         return self._rng.normal(self.mean,self.stdev)
         
 
-gauge1 = myDevice(20,5,"dev1")
+devices_list = [
+        myDevice(20,5,'dev1'),
+        myDevice(25,1,'dev2'),
+        myDevice(35,3,'dev3'),
+        myDevice(10,2,'dev4')
+    ]
 
-gauge1_out = {}
-gauge1_out['name'] = gauge1.name
 
 while 1:
-    gauge1_out['timestamp'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S:%f")
-    gauge1_out['reading'] = gauge1.take_reading()
-    print(json.dumps(gauge1_out), flush=True)
+    for i in devices_list:
+        gauge_out = {}
+        gauge_out['timestamp'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S:%f")
+        gauge_out['reading'] = i.take_reading()
+        gauge_out['name'] =  i.name
+        print(json.dumps(gauge_out), flush=True)
     Event().wait(1)
+
