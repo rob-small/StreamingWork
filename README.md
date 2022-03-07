@@ -1,15 +1,15 @@
 # StreamingWork
- 
+
 # Running Loki
 (base) osboxes@osboxes:~$ cd loki
-(base) osboxes@osboxes:~/loki$ ./loki-linux-amd64 -config.file=loki-local-config.yaml
+(base) osboxes@osboxes:~/loki$ nohup ./loki-linux-amd64 -config.file=loki-local-config.yaml > loki.out 2>&1 &
 
 # See Loki running
 http://localhost:3100/metrics
 
 # Running Promtail
 (base) osboxes@osboxes:~$ cd loki
-(base) osboxes@osboxes:~/loki$ ./promtail-linux-amd64 -config.file=promtail-local-config.yaml
+(base) osboxes@osboxes:~/loki$ nohup ./promtail-linux-amd64 -config.file=promtail-local-config.yaml > promtail.out 2>&1 &
 
 # Running Grafana
 sudo systemctl daemon-reload
