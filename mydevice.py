@@ -4,6 +4,7 @@ Created on Tue Mar  8 16:14:19 2022
 
 @author: mr_ro
 """
+from numpy.random import default_rng
 
 class myDevice:
     

@@ -16,7 +16,6 @@ x - convert output to json
 x - initialize a list of devices
 """
 
-from numpy.random import default_rng
 from threading import Event
 from datetime import datetime
 import json
@@ -29,7 +28,6 @@ devices_list = [
         myDevice(35,3,'dev3'),
         myDevice(10,2,'dev4')
     ]
-
 
 while 1:
     for i in devices_list:
