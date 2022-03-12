@@ -4,7 +4,9 @@ Created on Tue Mar  8 22:23:34 2022
 
 @author: mr_ro
 
-Expose all methods via web service
+x - Expose all methods via web service
+Add support for more than one device
+Add support for dynamic creation of device
 Initialize values via command line
 Make port # configurable by command line
 
@@ -17,6 +19,7 @@ app = Flask(__name__)
 
 
 theDevice =  myDevice(20,5,'dev1')
+
 
 @app.route('/device_name')
 def get_name():
@@ -35,7 +38,6 @@ def device_settings():
             }
         return jsonify(settings)
     else:
-        pass      
         if request.is_json:
             settings = request.get_json()
             theDevice.mean = float(settings["mean"])
