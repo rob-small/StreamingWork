@@ -13,8 +13,7 @@ Make port # configurable by command line
 """
 # save this as app.py
 from flask import Flask, jsonify, request, render_template
-from datetime import datetime
-import json
+
 from mydevice import myDevice
 
 app = Flask(__name__)
@@ -66,11 +65,7 @@ def get_reading():
     if request.is_json:
         settings = request.get_json()
         dev = device_list[settings["name"]]
-        gauge_out = {}
-        gauge_out['timestamp'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S:%f")
-        gauge_out['reading'] = dev.take_reading()
-        gauge_out['name'] =  dev.name
-        print(json.dumps(gauge_out), flush=True)
+
         return jsonify(dev.take_reading())
     else:
         return {"error": "Request must be JSON"}, 415
