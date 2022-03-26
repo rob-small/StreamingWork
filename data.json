@@ -1,0 +1,32 @@
+[
+    {
+        "mean": 24.0,
+        "name": "dev1",
+        "stdev": 0.5
+    },
+    {
+        "mean": 24.0,
+        "name": "dev2",
+        "stdev": 3
+    },
+    {
+        "mean": 35.0,
+        "name": "dev3",
+        "stdev": 3.0
+    },
+    {
+        "mean": 10.0,
+        "name": "dev4",
+        "stdev": 2.0
+    },
+    {
+        "mean": 20.0,
+        "name": "dev5",
+        "stdev": 0.5
+    },
+    {
+        "mean": 15.0,
+        "name": "dev6",
+        "stdev": 2.0
+    }
+]
