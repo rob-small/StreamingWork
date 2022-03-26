@@ -43,7 +43,7 @@ while 1:
         
         gauge_out = {}
         gauge_out['timestamp'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S:%f")
-        gauge_out['reading'] = response.text
+        gauge_out['reading'] = response.text.strip("\n")
         gauge_out['name'] =  i["name"]
         print(json.dumps(gauge_out), flush=True)
 
