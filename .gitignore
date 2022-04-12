@@ -1,2 +1,4 @@
 
 *.pyc
+send.py
+syncsend.py
