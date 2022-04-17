@@ -2,3 +2,5 @@
 *.pyc
 send.py
 syncsend.py
+config.json
+*.txt

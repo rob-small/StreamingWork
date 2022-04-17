@@ -2,8 +2,9 @@
 """
 Created on Wed Mar 23 19:35:30 2022
 x -Read device list from JSON file
-Set URL and PORT number from command line
-Set file name from command line
+x - Adjusted date to ISO 8601 format
+x - Set URL and PORT number from input file
+Set input file name from command line
 @author: mr_ro
 """
 
@@ -14,13 +15,25 @@ from datetime import datetime
 
 from azure.eventhub import EventData, EventHubProducerClient
 
-#url_add = "http://192.168.56.101:5000/devices"
-url_add = "http://localhost:5000/devices"
 headers = {
   'Content-Type': 'application/json'
 }
 
-# Opening JSON file
+# Opening JSON config file
+f = open('config.json')
+ 
+# returns JSON object as a dictionary
+config = json.load(f)
+
+url_add = config["device-server-url"]
+url_read = url_add + "/reading"
+azure_namespace = config["azure-hub-namespace"]
+azure_hub = config["azure-hub-name"]
+ 
+# Closing file
+f.close()
+
+# Opening JSON data file
 f = open('data.json')
  
 # returns JSON object as a list
@@ -34,12 +47,8 @@ for i in devices_list:
 # Closing file
 f.close()
 
-#url_read = "http://192.168.56.101:5000/devices/reading"
-url_read = "http://localhost:5000/devices/reading"
-
-
 # the event hub name.
-producer = EventHubProducerClient.from_connection_string(conn_str="Endpoint=sb://test-rs-usa.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=eMCAVFmf9giAdC9iaBj0xGitkfokPkY4qOYyFIMoB2g=", eventhub_name="myeventhub")
+producer = EventHubProducerClient.from_connection_string(conn_str=azure_namespace, eventhub_name=azure_hub)
 
 def pub_message(msg):
 
@@ -61,7 +70,7 @@ while 1:
         response = requests.request("GET", url_read, headers=headers, data=payload)
         
         gauge_out = {}
-        gauge_out['timestamp'] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S:%f")
+        gauge_out['ts'] = str(datetime.now())
         gauge_out['reading'] = response.text.strip("\n")
         gauge_out['name'] =  i["name"]
         pub_message(gauge_out)
