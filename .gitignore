@@ -5,3 +5,6 @@ syncsend.py
 config.json
 *.txt
 /.vs/slnx.sqlite
+.vs/StreamingWork/project-colors.json
+.vs/StreamingWork/v17/.suo
+.vs/VSWorkspaceState.json
