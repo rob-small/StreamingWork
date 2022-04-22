@@ -4,3 +4,4 @@ send.py
 syncsend.py
 config.json
 *.txt
+/.vs/slnx.sqlite
