@@ -36,11 +36,6 @@ f = open('data.json')
 # returns JSON object as a list
 devices_list = json.load(f)
  
-for i in devices_list:
-        payload = json.dumps(i)
-        response = requests.request("POST", url_add, headers=headers, data=payload)
-        print(response.text)
-
 # Closing file
 f.close()
 
