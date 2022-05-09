@@ -32,9 +32,8 @@ def getConnection() -> boto3.client:
 
 s3 = getConnection()
 
-objects = s3.list_objects(Bucket = bucket_name)
+objects = s3.list_objects(Bucket = bucket_name, Delimiter = '//')
 
 for i in objects['Contents']:
     print(i['Key'])
-
 
