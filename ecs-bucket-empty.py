@@ -27,10 +27,12 @@ def getConnection() -> boto3.client:
     s3 = boto3.client('s3', aws_access_key_id=access_key_id, aws_secret_access_key=secret_key, use_ssl=secure, endpoint_url=host)
     return s3
 
+# Get an S3.Client object
 s3 = getConnection()
 
-objects = s3.list_objects(Bucket = bucket_name, Delimiter = '//')
-
+objects = s3.list_objects(Bucket = bucket_name)
+count = 1
 for i in objects['Contents']:
-    print(i['Key'])
+    s3.delete_object(Bucket = bucket_name, Key = i['Key'])
+    print("Deleted {}".format(i['Key']))
 

@@ -32,5 +32,6 @@ s3 = getConnection()
 objects = s3.list_objects(Bucket = bucket_name, Delimiter = '//')
 
 for i in objects['Contents']:
-    print(i['Key'])
+    s3.download_file(Bucket = bucket_name, Key = i['Key'], Filename = ".\\tmp\\{}.json".format(i['Key']))
+    print("Copied {}".format(i['Key']))
 

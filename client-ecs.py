@@ -57,7 +57,7 @@ def pub_message(msg):
         i_msg_count = 1
         response = s3.put_object(Body = json.dumps(out_buffer),
                      Bucket = bucket_name,
-                     Key = "device/"+ datetime.now().strftime("%x-%X")
+                     Key = "device-"+ datetime.now().strftime("%d%m%y-%H-%M-%S")
                      )
         print(response)
         out_buffer.clear()
