@@ -1,0 +1,9 @@
+{
+  "device-server-url": "",
+  "azure-hub-namespace": "Endpoint=;SharedAccessKeyName=;SharedAccessKey=",
+  "azure-hub-name": "hub",
+  "ecs-host":"http://:80",
+  "ecs-id":"userkey",
+  "ecs-secret-key":"secretkey",
+  "ecs-bucket":"bucket name"
+}
