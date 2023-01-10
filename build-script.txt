@@ -1,0 +1,9 @@
+docker build -t app:v1 .
+docker build -t app-setup:v1 -f Dockerfile-device-setup .
+docker build -t app-client:v1 -f Dockerfile-client .
+
+docker network create stream-net
+
+docker run -p 5000:5000 --network stream-net --network-alias thehost app:v1
+docker run --network stream-net app-setup:v1 
+docker run --network stream-net app-client:v1 
