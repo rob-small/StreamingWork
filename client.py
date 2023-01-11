@@ -11,37 +11,37 @@ from threading import Event
 import requests
 import json
 from datetime import datetime
+import os
+
+# Get service URL. If no environment variable set then look in config file
+url_add = os.environ.get('DeviceServerUrl')
+
+if url_add is None:
+    # Opening JSON config file
+    f = open('config.json')
+ 
+    # returns JSON object as a dictionary
+    config = json.load(f)
+
+    url_add = config["device-server-url"]
+
+    # Closing file
+    f.close()
 
 headers = {
   'Content-Type': 'application/json'
 }
 
-# Opening JSON config file
-f = open('config.json')
- 
-# returns JSON object as a dictionary
-config = json.load(f)
-
-url_add = config["device-server-url"]
 url_read = url_add + "/reading"
  
-# Closing file
-f.close()
-
 # Opening JSON data file
 f = open('data.json')
  
 # returns JSON object as a list
 devices_list = json.load(f)
  
-for i in devices_list:
-        payload = json.dumps(i)
-        response = requests.request("POST", url_add, headers=headers, data=payload)
-        print(response.text)
-
 # Closing file
 f.close()
-
 
 def pub_message(msg):
     print(msg, flush=True)

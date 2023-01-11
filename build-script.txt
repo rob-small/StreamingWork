@@ -1,0 +1,22 @@
+docker build -t lilewite/app:v1 .
+docker build -t lilewite/app-setup:v1 -f Dockerfile-device-setup .
+docker build -t lilewite/app-client:v1 -f Dockerfile-client .
+
+docker network create stream-net
+
+docker run -p 5000:5000 --network stream-net --network-alias thehost app:v1
+
+docker run --network stream-net --network-alias thehost lilewite/app:v1
+docker run --network stream-net --env DeviceServerUrl=http://thehost:5000/devices lilewite/app-setup:v1 
+docker run --network stream-net --env DeviceServerUrl=http://thehost:5000/devices lilewite/app-client:v1 
+
+docker tag lilewite/app:v1 lilewite/app:v1
+docker tag lilewite/app-client:v1 lilewite/app-client:v1
+docker tag lilewite/app-setup:v1 lilewite/app-setup:v1
+
+docker push lilewite/app:v1
+docker push lilewite/app-setup:v1
+docker push lilewite/app-client:v1
+
+# PowerShell environment variable setting
+$Env:DeviceServerUrl="http://thehost:5000/dev"

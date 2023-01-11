@@ -7,15 +7,26 @@ Setup initial device configuration on servers
 
 import requests
 import json
+import os
 
-# Opening JSON config file
-f = open('config.json')
+# Get service URL. If no environment variable set then look in config file
+url_add = os.environ.get('DeviceServerUrl')
+
+if url_add is None:
+    # Opening JSON config file
+    f = open('config.json')
  
-# returns JSON object as a dictionary
-config = json.load(f)
+    # returns JSON object as a dictionary
+    config = json.load(f)
 
-# Closing file
-f.close()
+    url_add = config["device-server-url"]
+
+    # Closing file
+    f.close()
+
+headers = {
+  'Content-Type': 'application/json'
+}
 
 # Opening JSON data file
 f = open('data.json')
@@ -23,12 +34,6 @@ f = open('data.json')
 # returns JSON object as a list
 devices_list = json.load(f)
 
-headers = {
-  'Content-Type': 'application/json'
-}
-
-url_add = config["device-server-url"]
- 
 for i in devices_list:
         payload = json.dumps(i)
         response = requests.request("POST", url_add, headers=headers, data=payload)
