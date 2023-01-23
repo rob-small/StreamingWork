@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-app
+spec:
+  selector:
+    matchLabels:
+      run: device-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: device-app
+    spec:
+      containers:
+      - name: device-app
+        image: lilewite/app:v1
+        ports:
+        - containerPort: 5000

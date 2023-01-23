@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-client
+spec:
+  selector:
+    matchLabels:
+      run: device-client
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: device-client
+    spec:
+      containers:
+      - name: device-client
+        image: lilewite/app-client:v1
+        env:
+        - name: DeviceServerUrl
+          value: "http://device-app:5000/devices"

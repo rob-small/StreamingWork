@@ -20,3 +20,15 @@ docker push lilewite/app-client:v1
 
 # PowerShell environment variable setting
 $Env:DeviceServerUrl="http://thehost:5000/dev"
+
+kubectl apply -f ./k8s/deployment.yaml
+kubectl expose deployment/device-app
+
+docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices lilewite/app-setup:v1 
+docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices lilewite/app-client:v1 
+
+ kubectl config get-contexts
+ kubectl config use-context docker-desktop
+ kubectl config use-context kind-kindmultinode
+
+ kind create cluster --name kindmultinode --config ./k8s/kind.yaml
