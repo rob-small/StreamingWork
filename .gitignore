@@ -3,6 +3,7 @@
 send.py
 syncsend.py
 config.json
+config-local.txt
 queries.txt
 /.vs/slnx.sqlite
 .vs/StreamingWork/project-colors.json
