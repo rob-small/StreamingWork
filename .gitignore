@@ -5,6 +5,7 @@ syncsend.py
 config.json
 config-local.txt
 queries.txt
+build-script-local.txt
 /.vs/slnx.sqlite
 .vs/StreamingWork/project-colors.json
 .vs/StreamingWork/v17/.suo
