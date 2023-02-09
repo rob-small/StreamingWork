@@ -1,6 +1,7 @@
 docker build -t lilewite/app:v1 .
 docker build -t lilewite/app-setup:v1 -f Dockerfile-device-setup .
 docker build -t lilewite/app-client:v1 -f Dockerfile-client .
+docker build -t lilewite/app-cosmos-client:v1 -f Dockerfile-cosmos-client .
 
 docker network create stream-net
 
@@ -17,18 +18,30 @@ docker tag lilewite/app-setup:v1 lilewite/app-setup:v1
 docker push lilewite/app:v1
 docker push lilewite/app-setup:v1
 docker push lilewite/app-client:v1
+docker push lilewite/app-cosmos-client:v1
 
 # PowerShell environment variable setting
 $Env:DeviceServerUrl="http://thehost:5000/dev"
 
 kubectl apply -f ./k8s/deployment.yaml
+kubectl apply -f ./k8s/deployment-cosmos-client.yaml
+
 kubectl expose deployment/device-app
 
 docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices lilewite/app-setup:v1 
 docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices lilewite/app-client:v1 
+docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices --env COSMOS_HOST=$env:COSMOS_HOST --env COSMOS_KEY=$env:COSMOS_KEY  lilewite/app-cosmos-client:v1 
 
- kubectl config get-contexts
- kubectl config use-context docker-desktop
- kubectl config use-context kind-kindmultinode
+kubectl config get-contexts
+kubectl config use-context docker-desktop
+kubectl config use-context kind-kindmultinode
 
- kind create cluster --name kindmultinode --config ./k8s/kind.yaml
+kind create cluster --name kindmultinode --config ./k8s/kind.yaml
+
+kubectl create secret generic cosmos --from-literal=COSMOS_HOST=$env:COSMOS_HOST --from-literal=COSMOS_KEY=$env:COSMOS_KEY
+
+kubectl apply -f ./k8s/dashboard-service-account.yaml
+kubectl apply -f ./k8s/dashboard-cluster-role.yaml
+kubectl -n kubernetes-dashboard create token admin-user
+
+docker run -p 5432:5432 --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
