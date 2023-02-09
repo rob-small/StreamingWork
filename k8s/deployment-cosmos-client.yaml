@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-cosmos-client
+spec:
+  selector:
+    matchLabels:
+      run: device-cosmos-client
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: device-cosmos-client
+    spec:
+      containers:
+      - name: device-cosmos-client
+        image: lilewite/app-cosmos-client:v1
+        env:
+        - name: DeviceServerUrl
+          value: "http://device-app:5000/devices"
+        - name: COSMOS_HOST
+          valueFrom:
+              secretKeyRef:
+                 name: cosmos
+                 key: COSMOS_HOST
+        - name: COSMOS_KEY
+          valueFrom:
+              secretKeyRef:
+                 name: cosmos
+                 key: COSMOS_KEY
