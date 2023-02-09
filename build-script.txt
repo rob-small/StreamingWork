@@ -32,10 +32,16 @@ docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices lilewite/app
 docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices lilewite/app-client:v1 
 docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices --env COSMOS_HOST=$env:COSMOS_HOST --env COSMOS_KEY=$env:COSMOS_KEY  lilewite/app-cosmos-client:v1 
 
- kubectl config get-contexts
- kubectl config use-context docker-desktop
- kubectl config use-context kind-kindmultinode
+kubectl config get-contexts
+kubectl config use-context docker-desktop
+kubectl config use-context kind-kindmultinode
 
- kind create cluster --name kindmultinode --config ./k8s/kind.yaml
+kind create cluster --name kindmultinode --config ./k8s/kind.yaml
 
- kubectl create secret generic cosmos --from-literal=COSMOS_HOST=$env:COSMOS_HOST --from-literal=COSMOS_KEY=$env:COSMOS_KEY
+kubectl create secret generic cosmos --from-literal=COSMOS_HOST=$env:COSMOS_HOST --from-literal=COSMOS_KEY=$env:COSMOS_KEY
+
+kubectl apply -f ./k8s/dashboard-service-account.yaml
+kubectl apply -f ./k8s/dashboard-cluster-role.yaml
+kubectl -n kubernetes-dashboard create token admin-user
+
+docker run -p 5432:5432 --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
