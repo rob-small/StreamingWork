@@ -22,6 +22,7 @@ docker push lilewite/app:v1
 docker push lilewite/app-setup:v1
 docker push lilewite/app-client:v1
 docker push lilewite/app-cosmos-client:v1
+docker push lilewite/app-postgres-client:v1
 
 # PowerShell environment variable setting
 $Env:DeviceServerUrl="http://thehost:5000/dev"
@@ -55,3 +56,7 @@ kubectl apply -f ./k8s/postgres-configmap.yaml
 kubectl apply -f ./k8s/postgres-storage.yaml
 kubectl apply -f ./k8s/postgres-deployment.yaml
 kubectl apply -f ./k8s/postgres-service.yaml
+kubectl apply -f ./k8s/postgres-client-configmap.yaml
+kubectl apply -f ./k8s/postgres-client-deployment.yaml
+
+kubectl port-forward pod/postgres-785cb584f9-7bnqj 5432 
