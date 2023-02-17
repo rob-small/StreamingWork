@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: device-setup
+spec:
+  template:
+    spec:
+      containers:
+      - name: device-setup
+        image: lilewite/app-setup:v1
+        env:
+        - name: DeviceServerUrl
+          value: "http://device-app:5000/devices"
+      restartPolicy: Never

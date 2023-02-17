@@ -58,5 +58,6 @@ kubectl apply -f ./k8s/postgres-deployment.yaml
 kubectl apply -f ./k8s/postgres-service.yaml
 kubectl apply -f ./k8s/postgres-client-configmap.yaml
 kubectl apply -f ./k8s/postgres-client-deployment.yaml
+kubectl apply -f ./k8s/job-setup.yaml
 
 kubectl port-forward pod/postgres-785cb584f9-7bnqj 5432 
