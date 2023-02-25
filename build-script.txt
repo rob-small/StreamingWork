@@ -28,6 +28,9 @@ docker push lilewite/app-postgres-client:v1
 $Env:DeviceServerUrl="http://thehost:5000/dev"
 
 kubectl apply -f ./k8s/deployment.yaml
+kubectl apply -f ./k8s/service.yaml
+kubectl apply -f ./k8s/job-setup.yaml
+kubectl apply -f ./k8s/deployment-client.yaml
 kubectl apply -f ./k8s/deployment-cosmos-client.yaml
 
 kubectl expose deployment/device-app
@@ -46,10 +49,12 @@ kind create cluster --name kindmultinode --config ./k8s/kind.yaml
 
 kubectl create secret generic cosmos --from-literal=COSMOS_HOST=$env:COSMOS_HOST --from-literal=COSMOS_KEY=$env:COSMOS_KEY
 
+# Setup dashboard
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 kubectl apply -f ./k8s/dashboard-service-account.yaml
 kubectl apply -f ./k8s/dashboard-cluster-role.yaml
 kubectl -n kubernetes-dashboard create token admin-user
+kubectl proxy
 
 
 kubectl apply -f ./k8s/postgres-configmap.yaml
@@ -61,3 +66,10 @@ kubectl apply -f ./k8s/postgres-client-deployment.yaml
 kubectl apply -f ./k8s/job-setup.yaml
 
 kubectl port-forward pod/postgres-785cb584f9-7bnqj 5432 
+
+# Elastic - https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-deploy-eck.html
+kubectl create -f https://download.elastic.co/downloads/eck/2.6.1/crds.yaml
+kubectl apply -f https://download.elastic.co/downloads/eck/2.6.1/operator.yaml
+kubectl -n elastic-system logs -f statefulset.apps/elastic-operator
+kubectl apply -f ./k8s/elastic.yaml
+kubectl apply -f ./k8s/kibana.yaml

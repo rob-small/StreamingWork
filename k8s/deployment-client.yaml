@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: device-client
-        image: lilewite/app-client:v1
+        image: lilewite/app-client:v2
         env:
         - name: DeviceServerUrl
           value: "http://device-app:5000/devices"

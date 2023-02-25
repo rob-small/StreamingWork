@@ -12,6 +12,8 @@ import os
 # Get service URL. If no environment variable set then look in config file
 url_add = os.environ.get('DeviceServerUrl')
 
+print(url_add)
+
 if url_add is None:
     # Opening JSON config file
     f = open('config.json')
@@ -33,6 +35,8 @@ f = open('data.json')
  
 # returns JSON object as a list
 devices_list = json.load(f)
+
+print(url_add)
 
 for i in devices_list:
         payload = json.dumps(i)
