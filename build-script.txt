@@ -2,14 +2,17 @@ docker build -t lilewite/app:v1 .
 docker build -t lilewite/app-setup:v1 -f Dockerfile-device-setup .
 docker build -t lilewite/app-client:v1 -f Dockerfile-client .
 docker build -t lilewite/app-cosmos-client:v1 -f Dockerfile-cosmos-client .
+docker build -t lilewite/app-postgres-client:v1 -f Dockerfile-postgres-client .
 
 docker network create stream-net
 
 docker run -p 5000:5000 --network stream-net --network-alias thehost app:v1
 
-docker run --network stream-net --network-alias thehost lilewite/app:v1
-docker run --network stream-net --env DeviceServerUrl=http://thehost:5000/devices lilewite/app-setup:v1 
-docker run --network stream-net --env DeviceServerUrl=http://thehost:5000/devices lilewite/app-client:v1 
+docker run --network stream-net --network-alias thehost --name devicehost -d lilewite/app:v1
+docker run --network stream-net --env DeviceServerUrl=http://thehost:5000/devices --name devicesetup -d lilewite/app-setup:v1 
+docker run --network stream-net --env DeviceServerUrl=http://thehost:5000/devices --name device-simple-client -d lilewite/app-client:v1 
+docker run --network stream-net -p 5432:5432 --network-alias thedb --env POSTGRES_PASSWORD=$env:devicedb_pwd --env POSTGRES_USER=$env:devicedb_user --name device-db -d postgres
+docker run --network stream-net --env DeviceServerUrl=http://thehost:5000/devices --env devicedb_host=$env:devicedb_host --env devicedb_name=$env:devicedb_name --env devicedb_user=$env:devicedb_user --env devicedb_pwd=$env:devicedb_pwd --env devicedb_port=$env:devicedb_port --name device-postgres-client lilewite/app-postgres-client:v1 
 
 docker tag lilewite/app:v1 lilewite/app:v1
 docker tag lilewite/app-client:v1 lilewite/app-client:v1
@@ -19,11 +22,15 @@ docker push lilewite/app:v1
 docker push lilewite/app-setup:v1
 docker push lilewite/app-client:v1
 docker push lilewite/app-cosmos-client:v1
+docker push lilewite/app-postgres-client:v1
 
 # PowerShell environment variable setting
 $Env:DeviceServerUrl="http://thehost:5000/dev"
 
 kubectl apply -f ./k8s/deployment.yaml
+kubectl apply -f ./k8s/service.yaml
+kubectl apply -f ./k8s/job-setup.yaml
+kubectl apply -f ./k8s/deployment-client.yaml
 kubectl apply -f ./k8s/deployment-cosmos-client.yaml
 
 kubectl expose deployment/device-app
@@ -31,6 +38,8 @@ kubectl expose deployment/device-app
 docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices lilewite/app-setup:v1 
 docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices lilewite/app-client:v1 
 docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices --env COSMOS_HOST=$env:COSMOS_HOST --env COSMOS_KEY=$env:COSMOS_KEY  lilewite/app-cosmos-client:v1 
+docker run -p 5432:5432 --name thedb --env POSTGRES_PASSWORD=$env:devicedb_pwd --env POSTGRES_USER=$env:devicedb_user -d postgres
+docker run --env DeviceServerUrl=http://10.109.106.101:5000/devices --env devicedb_host=$env:devicedb_host --env devicedb_name=$env:devicedb_name --env devicedb_user=$env:devicedb_user --env devicedb_pwd=$env:devicedb_pwd --env devicedb_port=$env:devicedb_port lilewite/app-postgres-client:v1 
 
 kubectl config get-contexts
 kubectl config use-context docker-desktop
@@ -40,8 +49,27 @@ kind create cluster --name kindmultinode --config ./k8s/kind.yaml
 
 kubectl create secret generic cosmos --from-literal=COSMOS_HOST=$env:COSMOS_HOST --from-literal=COSMOS_KEY=$env:COSMOS_KEY
 
+# Setup dashboard
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 kubectl apply -f ./k8s/dashboard-service-account.yaml
 kubectl apply -f ./k8s/dashboard-cluster-role.yaml
 kubectl -n kubernetes-dashboard create token admin-user
+kubectl proxy
 
-docker run -p 5432:5432 --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+
+kubectl apply -f ./k8s/postgres-configmap.yaml
+kubectl apply -f ./k8s/postgres-storage.yaml
+kubectl apply -f ./k8s/postgres-deployment.yaml
+kubectl apply -f ./k8s/postgres-service.yaml
+kubectl apply -f ./k8s/postgres-client-configmap.yaml
+kubectl apply -f ./k8s/postgres-client-deployment.yaml
+kubectl apply -f ./k8s/job-setup.yaml
+
+kubectl port-forward pod/postgres-785cb584f9-7bnqj 5432 
+
+# Elastic - https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-deploy-eck.html
+kubectl create -f https://download.elastic.co/downloads/eck/2.6.1/crds.yaml
+kubectl apply -f https://download.elastic.co/downloads/eck/2.6.1/operator.yaml
+kubectl -n elastic-system logs -f statefulset.apps/elastic-operator
+kubectl apply -f ./k8s/elastic.yaml
+kubectl apply -f ./k8s/kibana.yaml

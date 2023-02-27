@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-client
+  template:
+    metadata:
+      labels:
+        app: postgres-client
+    spec:
+      containers:
+        - name: postgres-client
+          image: lilewite/app-postgres-client:v1
+          imagePullPolicy: "IfNotPresent"
+          envFrom:
+            - configMapRef:
+                name: postgres-client-config
