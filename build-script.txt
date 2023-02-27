@@ -73,3 +73,5 @@ kubectl apply -f https://download.elastic.co/downloads/eck/2.6.1/operator.yaml
 kubectl -n elastic-system logs -f statefulset.apps/elastic-operator
 kubectl apply -f ./k8s/elastic.yaml
 kubectl apply -f ./k8s/kibana.yaml
+# Configuring beats https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-beat-configuration.html
+kubectl apply -f ./k8s/elastic-beats.yaml
