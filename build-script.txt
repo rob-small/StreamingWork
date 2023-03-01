@@ -65,6 +65,12 @@ kubectl apply -f ./k8s/postgres-client-configmap.yaml
 kubectl apply -f ./k8s/postgres-client-deployment.yaml
 kubectl apply -f ./k8s/job-setup.yaml
 
+kubectl apply -f ./k8s/namespace.yaml
+kubectl apply -f ./k8s/deployment.yaml -n streaming-app
+kubectl apply -f ./k8s/service.yaml -n streaming-app
+kubectl apply -f ./k8s/job-setup.yaml -n streaming-app
+kubectl apply -f ./k8s/deployment-client.yaml -n streaming-app
+
 kubectl port-forward pod/postgres-785cb584f9-7bnqj 5432 
 
 # Elastic - https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-deploy-eck.html
@@ -75,3 +81,5 @@ kubectl apply -f ./k8s/elastic.yaml
 kubectl apply -f ./k8s/kibana.yaml
 # Configuring beats https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-beat-configuration.html
 kubectl apply -f ./k8s/elastic-beats.yaml
+kubectl port-forward service/quickstart-kb-http 5601
+kubectl get secret quickstart-es-elastic-user -o=jsonpath='{.data.elastic}'
