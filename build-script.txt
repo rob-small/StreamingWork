@@ -83,3 +83,5 @@ kubectl apply -f ./k8s/kibana.yaml
 kubectl apply -f ./k8s/elastic-beats.yaml
 kubectl port-forward service/quickstart-kb-http 5601
 kubectl get secret quickstart-es-elastic-user -o=jsonpath='{.data.elastic}'
+kubectl apply -f ./k8s/fluentd.yaml
+kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default

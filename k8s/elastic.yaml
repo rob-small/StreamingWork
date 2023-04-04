@@ -9,3 +9,10 @@ spec:
     count: 1
     config:
       node.store.allow_mmap: false
+    podTemplate:
+      spec:
+        containers:
+          - name: elasticsearch
+            env:
+               - name: "ELASTIC_CLIENT_APIVERSIONING"
+                 value: "true"   
